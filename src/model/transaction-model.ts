@@ -17,4 +17,4 @@ const transactionSchema = new Schema<TransactionRecord>(
   { timestamps: true }
 );
 
-export default mongoose.model<TransactionRecord>("Category", transactionSchema);
+export default mongoose.model<TransactionRecord>("Transaction", transactionSchema);

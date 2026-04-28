@@ -17,6 +17,13 @@ const swaggerDocument = {
     { name: "Transaction", description: "Management transaction" },
   ],
   components: {
+    securitySchemes: {
+      bearerAuth: {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
+      },
+    },
     schemas: {
       ApiResponse: {
         type: "object",
@@ -109,6 +116,7 @@ const swaggerDocument = {
       get: {
         tags: ["User"],
         summary: "Ambil semua user",
+        security: [{ bearerAuth: [] }],
         responses: {
           200: { description: "Daftar user" },
         },
@@ -118,6 +126,7 @@ const swaggerDocument = {
       get: {
         tags: ["User"],
         summary: "Ambil user berdasarkan id",
+        security: [{ bearerAuth: [] }],
         parameters: [
           {
             name: "id",
@@ -133,6 +142,7 @@ const swaggerDocument = {
       put: {
         tags: ["User"],
         summary: "Update user",
+        security: [{ bearerAuth: [] }],
         parameters: [
           {
             name: "id",
@@ -156,6 +166,7 @@ const swaggerDocument = {
       delete: {
         tags: ["User"],
         summary: "Hapus user",
+        security: [{ bearerAuth: [] }],
         parameters: [
           {
             name: "id",
@@ -173,6 +184,7 @@ const swaggerDocument = {
       get: {
         tags: ["Category"],
         summary: "Ambil semua kategori",
+        security: [{ bearerAuth: [] }],
         responses: {
           200: { description: "Daftar kategori" },
         },
@@ -180,6 +192,7 @@ const swaggerDocument = {
       post: {
         tags: ["Category"],
         summary: "Buat kategori baru",
+        security: [{ bearerAuth: [] }],
         requestBody: {
           required: true,
           content: {
@@ -197,6 +210,7 @@ const swaggerDocument = {
       get: {
         tags: ["Category"],
         summary: "Ambil kategori berdasarkan id",
+        security: [{ bearerAuth: [] }],
         parameters: [
           {
             name: "id",
@@ -212,6 +226,7 @@ const swaggerDocument = {
       put: {
         tags: ["Category"],
         summary: "Update kategori",
+        security: [{ bearerAuth: [] }],
         parameters: [
           {
             name: "id",
@@ -233,6 +248,7 @@ const swaggerDocument = {
       delete: {
         tags: ["Category"],
         summary: "Hapus kategori",
+        security: [{ bearerAuth: [] }],
         parameters: [
           {
             name: "id",
@@ -248,6 +264,7 @@ const swaggerDocument = {
       get: {
         tags: ["Transaction"],
         summary: "Ambil semua transaksi",
+        security: [{ bearerAuth: [] }],
         responses: {
           200: { description: "Daftar transaksi" },
         },
@@ -255,6 +272,7 @@ const swaggerDocument = {
       post: {
         tags: ["Transaction"],
         summary: "Buat transaksi baru",
+        security: [{ bearerAuth: [] }],
         requestBody: {
           required: true,
           content: {
@@ -272,6 +290,7 @@ const swaggerDocument = {
       get: {
         tags: ["Transaction"],
         summary: "Ambil transaksi berdasarkan id",
+        security: [{ bearerAuth: [] }],
         parameters: [
           {
             name: "id",
@@ -287,6 +306,7 @@ const swaggerDocument = {
       put: {
         tags: ["Transaction"],
         summary: "Update transaksi",
+        security: [{ bearerAuth: [] }],
         parameters: [
           {
             name: "id",
@@ -308,6 +328,7 @@ const swaggerDocument = {
       delete: {
         tags: ["Transaction"],
         summary: "Hapus transaksi",
+        security: [{ bearerAuth: [] }],
         parameters: [
           {
             name: "id",
