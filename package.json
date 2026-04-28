@@ -3,13 +3,15 @@
   "version": "1.0.0",
   "type": "module",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "engines": {
     "node": "22.x"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js"
+    "dev": "tsx watch index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "gunawan",
   "license": "ISC",
@@ -27,5 +29,17 @@
     "swagger-ui-express": "^5.0.1",
     "uuid": "^10.0.0",
     "vue3-toastify": "^0.2.4"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
+    "@types/connect-timeout": "^1.0.0",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.1",
+    "@types/multer": "^1.4.12.0",
+    "@types/node": "^22.15.21",
+    "@types/randomstring": "^1.1.9",
+    "@types/swagger-ui-express": "^4.1.8",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3"
   }
 }
