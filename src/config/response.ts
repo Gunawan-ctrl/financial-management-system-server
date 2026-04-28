@@ -1,4 +1,4 @@
-import type { RequestResponse } from "../types/domain.js";
+import type { RequestResponse } from "../types/domain.ts";
 
 const requestResponse = {
   gagal: (message: string): RequestResponse => ({

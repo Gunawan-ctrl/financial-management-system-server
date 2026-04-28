@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import type { CategoryRecord } from "../types/domain.js";
+import type { CategoryRecord } from "../types/domain.ts";
 
 const { Schema } = mongoose;
 

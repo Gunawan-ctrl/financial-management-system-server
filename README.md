@@ -96,6 +96,9 @@ MONGO_DEV=mongodb://localhost:27017/financial-management
 
 # Node Environment
 NODE_ENV=development
+
+# JWT Secret untuk Bearer Token
+JWT_SECRET=change-me-in-production
 ```
 
 ### Contoh Konfigurasi MongoDB
@@ -198,6 +201,8 @@ http://localhost:4000
 | PUT | `/api/v1/user/:id` | Update user |
 | DELETE | `/api/v1/user/:id` | Hapus user |
 
+Endpoint `GET/PUT/DELETE` pada user membutuhkan Bearer Token.
+
 ### Category Endpoints
 
 | Method | Endpoint | Deskripsi |
@@ -207,6 +212,16 @@ http://localhost:4000
 | GET | `/api/v1/category/:id` | Ambil kategori berdasarkan ID |
 | PUT | `/api/v1/category/:id` | Update kategori |
 | DELETE | `/api/v1/category/:id` | Hapus kategori |
+
+Semua endpoint category membutuhkan Bearer Token.
+
+### Authentication Header
+
+Untuk endpoint yang dilindungi, kirim header berikut:
+
+```http
+Authorization: Bearer <token>
+```
 
 ### Health Check
 
@@ -246,6 +261,15 @@ curl -X POST http://localhost:4000/api/v1/user/login \
     "email": "john@example.com",
     "password": "securePassword123"
   }'
+```
+
+Response login akan mengembalikan token JWT pada `data.token`.
+
+#### Akses Endpoint yang Dilindungi
+
+```bash
+curl -X GET http://localhost:4000/api/v1/category \
+  -H "Authorization: Bearer <token>"
 ```
 
 #### Buat Kategori

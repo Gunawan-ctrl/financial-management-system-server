@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import type { UserRecord } from "../types/domain.js";
+import type { UserRecord } from "../types/domain.ts";
 
 const { Schema } = mongoose;
 

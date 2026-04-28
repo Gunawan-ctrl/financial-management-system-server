@@ -2,11 +2,11 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import path from "path";
-import dbconfig from "./src/config/dbconfig.js";
-import indexRoutes from "./src/routes/index.js";
+import dbconfig from "./src/config/dbconfig.ts";
+import indexRoutes from "./src/routes/index.ts";
 import timeout from "connect-timeout";
 import swaggerUi from "swagger-ui-express";
-import swaggerDocument from "./src/documentation/swagger.js";
+import swaggerDocument from "./src/documentation/swagger.ts";
 
 const app = express();
 

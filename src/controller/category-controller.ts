@@ -1,8 +1,8 @@
 import type { Request, Response } from "express";
 import { v4 as uuidv4 } from "uuid";
-import requestResponse from "../config/response.js";
-import categoryService from "../service/category-service.js";
-import type { CategoryRecord, IdParams } from "../types/domain.js";
+import requestResponse from "../config/response.ts";
+import categoryService from "../service/category-service.ts";
+import type { CategoryRecord, IdParams } from "../types/domain.ts";
 
 type CategoryBody = Partial<CategoryRecord>;
 

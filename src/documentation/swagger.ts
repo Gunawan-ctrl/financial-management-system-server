@@ -12,12 +12,9 @@ const swaggerDocument = {
     },
   ],
   tags: [
-    { name: "Root", description: "Health dan root endpoint" },
     { name: "User", description: "Autentikasi dan manajemen user" },
     { name: "Category", description: "Manajemen kategori" },
-    { name: "Stok", description: "Manajemen stok" },
-    { name: "Menu", description: "Manajemen menu" },
-    { name: "Book", description: "Manajemen buku" },
+    { name: "Transaction", description: "Management transaction" },
   ],
   components: {
     schemas: {
@@ -64,39 +61,13 @@ const swaggerDocument = {
           description: { type: "string", example: "Kategori untuk menu minuman" },
         },
       },
-      StokInput: {
+      TransactionInput: {
         type: "object",
         required: ["name"],
         properties: {
-          name: { type: "string", example: "Gula" },
-          price: { type: "number", example: 12000 },
-          stok: { type: "number", example: 10 },
+          name: { type: "string", example: "Transaksi 1" },
         },
-      },
-      MenuInput: {
-        type: "object",
-        required: ["IDKategori", "name"],
-        properties: {
-          IDKategori: { type: "string", example: "cat-123" },
-          name: { type: "string", example: "Es Kopi Susu" },
-          description: { type: "string", example: "Menu kopi susu dingin" },
-          price: { type: "string", example: "18000" },
-          upload_menu: { type: "string", format: "binary" },
-        },
-      },
-      BookInput: {
-        type: "object",
-        required: ["IDKategori", "judul"],
-        properties: {
-          IDKategori: { type: "string", example: "cat-123" },
-          judul: { type: "string", example: "Laskar Pelangi" },
-          penulis: { type: "string", example: "Andrea Hirata" },
-          deskripsi: { type: "string", example: "Novel best seller" },
-          penerbit: { type: "string", example: "Bentang" },
-          publist_year: { type: "string", example: "2005" },
-          cover_buku: { type: "string", format: "binary" },
-        },
-      },
+      }
     },
   },
   paths: {
@@ -273,6 +244,81 @@ const swaggerDocument = {
         responses: { 200: { description: "Kategori berhasil dihapus" } },
       },
     },
+    "/api/v1/transaction": {
+      get: {
+        tags: ["Transaction"],
+        summary: "Ambil semua transaksi",
+        responses: {
+          200: { description: "Daftar transaksi" },
+        },
+      },
+      post: {
+        tags: ["Transaction"],
+        summary: "Buat transaksi baru",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/TransactionInput" },
+            },
+          },
+        },
+        responses: {
+          201: { description: "Transaksi berhasil dibuat" },
+        },
+      },
+    },
+    "/api/v1/transaction/{id}": {
+      get: {
+        tags: ["Transaction"],
+        summary: "Ambil transaksi berdasarkan id",
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+          },
+        ],
+        responses: {
+          200: { description: "Data transaksi" },
+        },
+      },
+      put: {
+        tags: ["Transaction"],
+        summary: "Update transaksi",
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/TransactionInput" },
+            },
+          },
+        },
+        responses: { 200: { description: "Transaksi berhasil diupdate" } },
+      },
+      delete: {
+        tags: ["Transaction"],
+        summary: "Hapus transaksi",
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+          },
+        ],
+        responses: { 200: { description: "Transaksi berhasil dihapus" } },
+      },
+    }
   },
 };
 

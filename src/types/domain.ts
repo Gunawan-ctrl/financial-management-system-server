@@ -16,6 +16,11 @@ export interface CategoryRecord {
   updatedAt?: Date;
 }
 
+export interface TransactionRecord {
+  id?: string;
+  name: string;
+}
+
 export interface RequestResponse<T = unknown> {
   code: number;
   status: boolean;

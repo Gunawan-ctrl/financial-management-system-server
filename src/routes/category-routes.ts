@@ -1,7 +1,10 @@
 import express from "express";
-import controllers from "../controller/category-controller.js";
+import controllers from "../controller/category-controller.ts";
+import authenticateToken from "../middlewares/authenticateToken.ts";
 
 const router = express.Router();
+
+router.use(authenticateToken);
 
 router.post("/", controllers.create);
 router.get("/", controllers.getAll);

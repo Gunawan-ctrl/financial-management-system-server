@@ -1,10 +1,11 @@
 import type { Request, Response } from "express";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
-import userModel from "../model/user-model.js";
-import userService from "../service/user-service.js";
-import requestResponse from "../config/response.js";
-import type { IdParams, UserRecord } from "../types/domain.js";
+import userModel from "../model/user-model.ts";
+import userService from "../service/user-service.ts";
+import requestResponse from "../config/response.ts";
+import type { IdParams, UserRecord } from "../types/domain.ts";
 
 type UserBody = Partial<UserRecord>;
 
@@ -40,7 +41,20 @@ const login = async (req: Request<unknown, unknown, { email?: string; password?:
     const match = await bcrypt.compare(password, user.password);
     if (!match) return res.json(requestResponse.gagal("Password Salah"));
 
-    res.json(requestResponse.suksesLogin(user));
+    const secret = process.env.JWT_SECRET || "development-secret-key";
+    const token = jwt.sign(
+      {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      },
+      secret,
+      { expiresIn: "1d" }
+    );
+
+    const { password: _hiddenPassword, ...safeUser } = user;
+
+    res.json(requestResponse.suksesLogin({ token, user: safeUser }));
   } catch (error) {
     res.json(requestResponse.kesalahan());
     console.log(error);
