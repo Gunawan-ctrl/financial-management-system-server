@@ -1,5 +1,5 @@
 import type { FilterQuery, UpdateQuery } from "mongoose";
-import transactionModel from "../model/transaction-model.ts";
+import transactionModel from "../models/transaction-model.ts";
 import type { TransactionRecord } from "../types/domain.ts";
 
 const create = async (data: TransactionRecord): Promise<TransactionRecord> => {

@@ -1,5 +1,5 @@
 import express from "express";
-import controllers from "../controller/category-controller.ts";
+import controllers from "../controllers/category-controller.ts";
 import authenticateToken from "../middlewares/authenticateToken.ts";
 
 const router = express.Router();

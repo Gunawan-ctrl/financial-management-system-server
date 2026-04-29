@@ -1,4 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
+import requestResponse from "../utils/response.ts";
 import jwt from "jsonwebtoken";
 
 type JwtPayload = {
@@ -10,11 +11,7 @@ type JwtPayload = {
 const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({
-      code: 401,
-      status: false,
-      message: "Token tidak ditemukan",
-    });
+    return res.status(401).json(requestResponse.unauthorized("Token tidak ditemukan"));
   }
 
   const token = authHeader.split(" ")[1];
@@ -25,11 +22,7 @@ const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
     res.locals.user = decoded;
     next();
   } catch {
-    return res.status(401).json({
-      code: 401,
-      status: false,
-      message: "Token tidak valid atau sudah kedaluwarsa",
-    });
+    return res.status(401).json(requestResponse.unauthorized("Token tidak valid"));
   }
 };
 

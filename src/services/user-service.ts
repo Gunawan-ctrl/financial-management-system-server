@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import type { FilterQuery, UpdateQuery } from "mongoose";
-import userModel from "../model/user-model.ts";
+import userModel from "../models/user-model.ts";
 import type { UserRecord } from "../types/domain.ts";
 
 const getAll = async (): Promise<UserRecord[]> => {

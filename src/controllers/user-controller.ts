@@ -2,9 +2,9 @@ import type { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
-import userModel from "../model/user-model.ts";
-import userService from "../service/user-service.ts";
-import requestResponse from "../config/response.ts";
+import userModel from "../models/user-model.ts";
+import userService from "../services/user-service.ts";
+import requestResponse from "../utils/response.ts";
 import type { IdParams, UserRecord } from "../types/domain.ts";
 
 type UserBody = Partial<UserRecord>;
@@ -15,9 +15,16 @@ const create = async (req: Request<unknown, unknown, UserBody>, res: Response) =
   const defaultPassword = "password123";
 
   try {
-    const user = await userModel.findOne({ email }, { _id: 0, __v: 0 }, { lean: true }).exec();
-    if (user) {
-      return res.json(requestResponse.gagal("email telah ada"));
+    // validate email jika sudah ada
+    const existingEmail = await userModel.findOne({ email,  }, { _id: 0, __v: 0 }, { lean: true }).exec();
+    if (existingEmail) {
+      return res.json(requestResponse.badRequest("email telah ada"));
+    }
+
+    // validate username jika sudah ada
+    const existingUsername = await userModel.findOne({ username: req.body.username }, { _id: 0, __v: 0 }, { lean: true }).exec();
+    if (existingUsername) {
+      return res.json(requestResponse.badRequest("username telah ada"));
     }
 
     const hash = password
@@ -25,9 +32,9 @@ const create = async (req: Request<unknown, unknown, UserBody>, res: Response) =
       : await bcrypt.hash(defaultPassword, 10);
 
     await userModel.create({ ...req.body, password: hash });
-    res.json(requestResponse.berhasil("Berhasil Registrasi"));
+    res.json(requestResponse.created({ email, password: defaultPassword }));
   } catch (error) {
-    res.json(requestResponse.kesalahan());
+    res.json(requestResponse.internalError());
   }
 };
 
@@ -36,10 +43,10 @@ const login = async (req: Request<unknown, unknown, { email?: string; password?:
 
   try {
     const user = await userModel.findOne({ email }, { _id: 0, __v: 0 }, { lean: true }).exec();
-    if (!user) return res.json(requestResponse.gagal("email tidak terdaftar"));
+    if (!user) return res.json(requestResponse.notFound("email tidak terdaftar"));
 
     const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.json(requestResponse.gagal("Password Salah"));
+    if (!match) return res.json(requestResponse.badRequest("Password Salah"));
 
     const secret = process.env.JWT_SECRET || "development-secret-key";
     const token = jwt.sign(
@@ -54,9 +61,9 @@ const login = async (req: Request<unknown, unknown, { email?: string; password?:
 
     const { password: _hiddenPassword, ...safeUser } = user;
 
-    res.json(requestResponse.suksesLogin({ token, user: safeUser }));
+    res.json(requestResponse.successLogin({ token, user: safeUser }));
   } catch (error) {
-    res.json(requestResponse.kesalahan());
+    res.json(requestResponse.internalError());
     console.log(error);
   }
 };
@@ -64,9 +71,16 @@ const login = async (req: Request<unknown, unknown, { email?: string; password?:
 const getAll = async (_req: Request, res: Response) => {
   try {
     const users = await userService.getAll();
-    res.json(requestResponse.suksesWithData(users));
+
+    // Jika data kosong, kembalikan respons dengan pesan khusus
+    if (users.length === 0) {
+      return res.json(requestResponse.notFound("Tidak ada user yang ditemukan"));
+    }
+
+    // Jika data ditemukan, kembalikan dengan respons sukses
+    res.json(requestResponse.successWithData(users));
   } catch (error) {
-    res.json(requestResponse.kesalahan());
+    res.json(requestResponse.internalError());
   }
 };
 
@@ -74,29 +88,29 @@ const getById = async (req: Request<IdParams>, res: Response) => {
   try {
     const user = await userService.getById({ id: req.params.id });
     if (!user) {
-      return res.json(requestResponse.gagal("User tidak ditemukan"));
+      return res.json(requestResponse.badRequest("User tidak ditemukan"));
     }
-    res.json(requestResponse.suksesWithData(user));
+    res.json(requestResponse.successWithData(user));
   } catch (error) {
-    res.json(requestResponse.kesalahan());
+    res.json(requestResponse.internalError());
   }
 };
 
 const updateOne = async (req: Request<IdParams, unknown, UserBody>, res: Response) => {
   try {
     const user = await userService.updateOne({ id: req.params.id }, req.body);
-    res.json(requestResponse.suksesWithData(user));
+    res.json(requestResponse.successWithData(user));
   } catch (error) {
-    res.json(requestResponse.kesalahan());
+    res.json(requestResponse.internalError());
   }
 };
 
 const deleteOne = async (req: Request<IdParams>, res: Response) => {
   try {
     await userService.deleteOne({ id: req.params.id });
-    res.json(requestResponse.berhasil("Berhasil menghapus data"));
+    res.json(requestResponse.success("Berhasil menghapus data"));
   } catch (error) {
-    res.json(requestResponse.kesalahan());
+    res.json(requestResponse.internalError());
   }
 };
 

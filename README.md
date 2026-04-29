@@ -121,7 +121,7 @@ MONGO_DEV=mongodb+srv://username:password@cluster0.xxxxx.mongodb.net/financial-m
 npm run dev
 ```
 
-Jalankan ini untuk development dengan TypeScript watcher yang otomatis restart server ketika ada perubahan file.
+Jalankan ini untuk development dengan `nodemon` yang otomatis restart server ketika ada perubahan file TypeScript.
 
 ### Production Build
 

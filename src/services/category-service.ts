@@ -1,5 +1,5 @@
 import type { FilterQuery, UpdateQuery } from "mongoose";
-import categoryModel from "../model/category-model.ts";
+import categoryModel from "../models/category-model.ts";
 import type { CategoryRecord } from "../types/domain.ts";
 
 const create = async (data: CategoryRecord): Promise<CategoryRecord> => {

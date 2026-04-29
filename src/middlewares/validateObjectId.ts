@@ -1,12 +1,12 @@
 import type { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
-import requestResponse from "../config/response.ts";
+import requestResponse from "../utils/response.ts";
 
 const validateObjectId = (req: Request, res: Response, next: NextFunction) => {
   const id = String(req.params.id);
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.json(requestResponse.gagal("ID tidak valid"));
+    return res.json(requestResponse.badRequest("ID tidak valid"));
   }
 
   next();
