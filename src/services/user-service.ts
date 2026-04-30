@@ -3,12 +3,27 @@ import type { FilterQuery, UpdateQuery } from "mongoose";
 import userModel from "../models/user-model.ts";
 import type { UserRecord } from "../types/domain.ts";
 
+// Create a new user
+const create = async (data: UserRecord): Promise<UserRecord> => {
+  const { password } = data;
+  const defaultPassword = "password123";
+  // hash password
+  const hashedPassword = await bcrypt.hash(password || defaultPassword, 10);
+
+  const userData = {
+    ...data,
+    password: hashedPassword,
+  };
+
+  return await userModel.create(userData);
+};
+
 const getAll = async (): Promise<UserRecord[]> => {
-  return await userModel.find({}, { _id: 0, __v: 0 }, { lean: true }).exec();
+  return userModel.find({}, { _id: 0, __v: 0, createdAt: 0, updatedAt: 0 }).lean().exec();
 };
 
 const getById = async (id: FilterQuery<UserRecord>): Promise<UserRecord | null> => {
-  return await userModel.findOne(id, { _id: 0, __v: 0 }, { lean: true }).exec();
+  return await userModel.findOne(id, { _id: 0, __v: 0 }).lean().exec();
 };
 
 const updateOne = async (id: FilterQuery<UserRecord>, body: UpdateQuery<UserRecord>) => {
@@ -25,6 +40,7 @@ const resetPassword = async (id: FilterQuery<UserRecord>, newPassword: string) =
 };
 
 export default {
+  create,
   getAll,
   getById,
   updateOne,

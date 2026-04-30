@@ -1,4 +1,4 @@
-import type { Request, Response } from "express";
+import type { Request, Response, NextFunction } from "express";
 import { v4 as uuidv4 } from "uuid";
 import requestResponse from "../utils/response.ts";
 import transactionService from "../services/transaction-service.ts";
@@ -6,67 +6,49 @@ import type { TransactionRecord, IdParams } from "../types/domain.ts";
 
 type TransactionBody = Partial<TransactionRecord>;
 
-const create = async (req: Request<unknown, unknown, TransactionBody>, res: Response) => {
+const create = async (req: Request<unknown, unknown, TransactionBody>, res: Response, next: NextFunction) => {
   req.body.id = uuidv4();
   try {
-    // validasi input
-    if (!req.body.name) {
-      return res.status(400).json(requestResponse.badRequest("Nama transaksi wajib diisi"));
-    }
-    // validasi nama unik
-    const existingTransaction = await transactionService.getById({ name: req.body.name });
-    if (existingTransaction) {
-      return res.status(400).json(requestResponse.badRequest("Nama transaksi sudah ada"));
-    }
-
-    // buat transaksi baru
-    const data = await transactionService.create(req.body as TransactionRecord);
-    res.status(201).json(requestResponse.successWithData(data));
+    await transactionService.create(req.body as TransactionRecord);
+    res.status(201).json(requestResponse.success("Transaksi berhasil dibuat"));
   } catch (error) {
-    res.status(500).json(requestResponse.internalError());
+    next(error);
   }
 };
 
-const getAll = async (_req: Request, res: Response) => {
+const getAll = async (_req: Request, res: Response, next: NextFunction) => {
   try {
     const data = await transactionService.getAll();
-
-    // Jika data kosong, kembalikan respons dengan pesan khusus
-    if (data.length === 0) {
-      return res.json(requestResponse.notFound("Tidak ada transaksi yang ditemukan"));
-    }
-
-    // Jika data ditemukan, kembalikan dengan respons sukses
     res.json(requestResponse.successWithData(data));
   } catch (error) {
-    res.json(requestResponse.internalError());
+    next(error)
   }
 };
 
-const getById = async (req: Request<IdParams>, res: Response) => {
+const getById = async (req: Request<IdParams>, res: Response, next: NextFunction) => {
   try {
     const data = await transactionService.getById({ id: req.params.id });
     res.json(requestResponse.successWithData(data));
   } catch (error) {
-    res.status(500).json(requestResponse.internalError());
+    next(error)
   }
 };
 
-const updateOne = async (req: Request<IdParams, unknown, TransactionBody>, res: Response) => {
+const updateOne = async (req: Request<IdParams, unknown, TransactionBody>, res: Response, next: NextFunction) => {
   try {
-    const data = await transactionService.updateOne({ id: req.params.id }, req.body);
+    await transactionService.updateOne({ id: req.params.id }, req.body);
     res.json(requestResponse.success("Data berhasil diperbarui"));
   } catch (error) {
-    res.status(500).json(requestResponse.internalError());
+    next(error);
   }
 };
 
-const deleteOne = async (req: Request<IdParams>, res: Response) => {
+const deleteOne = async (req: Request<IdParams>, res: Response, next: NextFunction) => {
   try {
     await transactionService.deleteOne({ id: req.params.id });
     res.json(requestResponse.success("Data berhasil dihapus"));
   } catch (error) {
-    res.status(500).json(requestResponse.internalError());
+    next(error);
   }
 };
 

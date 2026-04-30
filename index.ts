@@ -7,6 +7,7 @@ import indexRoutes from "./src/routes/index.ts";
 import timeout from "connect-timeout";
 import swaggerUi from "swagger-ui-express";
 import swaggerDocument from "./src/documentation/swagger.ts";
+import errorHandler from "./src/middlewares/errorHandler.ts";
 
 const app = express();
 
@@ -38,5 +39,5 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.get("/api-docs.json", (req, res) => res.json(swaggerDocument));
 
 app.use(indexRoutes);
-
+app.use(errorHandler);
 app.listen(dbconfig.PORT, () => console.log(`Server berjalan di port ${dbconfig.PORT}`));

@@ -1,31 +1,54 @@
-import type { FilterQuery, UpdateQuery } from "mongoose";
-import transactionModel from "../models/transaction-model.ts";
+import transactionRepository from "../repositories/transaction-repository.ts";
 import type { TransactionRecord } from "../types/domain.ts";
 
 const create = async (data: TransactionRecord): Promise<TransactionRecord> => {
-  return await transactionModel.create(data);
-};
+  if (!data.name) {
+    throw { status: 400, message: "Nama transaksi wajib diisi" };
+  }
+  const validateUniqueName = await transactionRepository.getById({ name: data.name });
+  if (validateUniqueName) {
+    throw { status: 400, message: "Nama transaksi sudah ada" };
+  }
+
+  return await transactionRepository.create(data);
+}
 
 const getAll = async (): Promise<TransactionRecord[]> => {
-  return await transactionModel.find({}, { _id: 0, __v: 0 }, { lean: true }).exec();
+  const data = await transactionRepository.getAll();
+  if (!data.length) {
+    throw { status: 404, message: "Tidak ada transaksi yang ditemukan" };
+  }
+  return data;
 };
 
-const getById = async (id: FilterQuery<TransactionRecord>): Promise<TransactionRecord | null> => {
-  return await transactionModel.findOne(id, { _id: 0, __v: 0 }, { lean: true }).exec();
+const getById = async (id: Partial<TransactionRecord>): Promise<TransactionRecord | null> => {
+  const data = await transactionRepository.getById(id);
+  if (!data) {
+    throw { status: 404, message: "Transaksi tidak ditemukan" };
+  }
+  return data;
 };
 
-const updateOne = async (id: FilterQuery<TransactionRecord>, body: UpdateQuery<TransactionRecord>) => {
-  return await transactionModel.updateOne(id, body, { new: true }).exec();
-};
+const updateOne = async (id: Partial<TransactionRecord>, body: Partial<TransactionRecord>) => {
+  const data = await transactionRepository.updateOne(id, body);
+  if (data.matchedCount === 0) {
+    throw { status: 404, message: "Transaksi tidak ditemukan" };
+  }
+  return data;
+}
 
-const deleteOne = async (id: FilterQuery<TransactionRecord>) => {
-  return await transactionModel.deleteOne(id).exec();
-};
+const deleteOne = async (id: Partial<TransactionRecord>) => {
+  const data = await transactionRepository.deleteOne(id);
+  if (data.deletedCount === 0) {
+    throw { status: 404, message: "Transaksi tidak ditemukan" };
+  }
+  return data;
+}
 
 export default {
+  create,
   getAll,
   getById,
-  create,
   updateOne,
   deleteOne,
 };

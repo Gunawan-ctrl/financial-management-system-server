@@ -39,6 +39,12 @@ const requestResponse = {
     message,
   }),
 
+  error: (status: number, message: string): RequestResponse => ({
+    status,
+    success: false,
+    message,
+  }),
+
   successWithData: <T>(data: T): RequestResponse<T> => ({
     status: 200,
     success: true,

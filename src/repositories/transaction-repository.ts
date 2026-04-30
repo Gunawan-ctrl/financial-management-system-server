@@ -7,11 +7,11 @@ const create = async (data: TransactionRecord): Promise<TransactionRecord> => {
 };
 
 const getAll = async (): Promise<TransactionRecord[]> => {
-  return await transactionModel.find({}, { _id: 0, __v: 0 }, { lean: true }).exec();
+  return await transactionModel.find({}, { _id: 0, __v: 0 }).lean().exec();
 };
 
 const getById = async (id: FilterQuery<TransactionRecord>): Promise<TransactionRecord | null> => {
-  return await transactionModel.findOne(id, { _id: 0, __v: 0 }, { lean: true }).exec();
+  return await transactionModel.findOne(id, { _id: 0, __v: 0 }).lean().exec();
 };
 
 const updateOne = async (id: FilterQuery<TransactionRecord>, body: UpdateQuery<TransactionRecord>) => {
