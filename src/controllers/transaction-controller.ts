@@ -10,7 +10,7 @@ const create = async (req: Request<unknown, unknown, TransactionBody>, res: Resp
   req.body.id = uuidv4();
   try {
     await transactionService.create(req.body as TransactionRecord);
-    res.status(201).json(requestResponse.success("Transaksi berhasil dibuat"));
+    res.status(201).json(requestResponse.created());
   } catch (error) {
     next(error);
   }

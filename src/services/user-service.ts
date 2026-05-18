@@ -1,42 +1,33 @@
 import bcrypt from "bcrypt";
 import type { FilterQuery, UpdateQuery } from "mongoose";
-import userModel from "../models/user-model.ts";
+import userRepository from "../repositories/user-repository.ts";
 import type { UserRecord } from "../types/domain.ts";
 
 // Create a new user
 const create = async (data: UserRecord): Promise<UserRecord> => {
-  const { password } = data;
-  const defaultPassword = "password123";
-  // hash password
-  const hashedPassword = await bcrypt.hash(password || defaultPassword, 10);
 
-  const userData = {
-    ...data,
-    password: hashedPassword,
-  };
-
-  return await userModel.create(userData);
+  return await userRepository.create(data);
 };
 
 const getAll = async (): Promise<UserRecord[]> => {
-  return userModel.find({}, { _id: 0, __v: 0, createdAt: 0, updatedAt: 0 }).lean().exec();
+  return await userRepository.getAll();
 };
 
 const getById = async (id: FilterQuery<UserRecord>): Promise<UserRecord | null> => {
-  return await userModel.findOne(id, { _id: 0, __v: 0 }).lean().exec();
+  return await userRepository.getById(id);
 };
 
 const updateOne = async (id: FilterQuery<UserRecord>, body: UpdateQuery<UserRecord>) => {
-  return await userModel.updateOne(id, body).exec();
+  return await userRepository.updateOne(id, body);
 };
 
 const deleteOne = async (id: FilterQuery<UserRecord>) => {
-  return await userModel.deleteOne(id).exec();
+  return await userRepository.deleteOne(id);
 };
 
 const resetPassword = async (id: FilterQuery<UserRecord>, newPassword: string) => {
   const hashedPassword = await bcrypt.hash(newPassword, 10);
-  return await userModel.updateOne(id, { password: hashedPassword }).exec();
+  return await userRepository.resetPassword(id, hashedPassword);
 };
 
 export default {

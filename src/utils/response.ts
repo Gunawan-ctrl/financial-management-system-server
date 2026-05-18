@@ -52,11 +52,10 @@ const requestResponse = {
     data,
   }),
 
-  created: <T>(data: T): RequestResponse<T> => ({
+  created: (): RequestResponse => ({
     status: 201,
     success: true,
     message: "Data berhasil dibuat",
-    data,
   }),
 
   successLogin: <T>(data: T): RequestResponse<T> => ({

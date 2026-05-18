@@ -32,7 +32,7 @@ const create = async (req: Request<unknown, unknown, UserBody>, res: Response) =
       : await bcrypt.hash(defaultPassword, 10);
 
     await userModel.create({ ...req.body, password: hash });
-    res.json(requestResponse.created({ email, password: defaultPassword }));
+    res.json(requestResponse.created());
   } catch (error) {
     res.json(requestResponse.internalError());
   }
