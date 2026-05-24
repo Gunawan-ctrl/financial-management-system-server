@@ -29,8 +29,8 @@ app.use("/assets", express.static(assetsPath));
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
-  })
+    origin: "http://localhost:5173",
+  }),
 );
 app.use(express.json({ limit: "20mb" }));
 app.use(express.urlencoded({ extended: true, limit: "20mb" }));
