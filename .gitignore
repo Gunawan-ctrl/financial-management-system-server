@@ -2,3 +2,5 @@
 nodemodules
 dist
 vercel.json
+.vercel
+.env*
