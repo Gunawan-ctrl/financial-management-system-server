@@ -1,3 +1,4 @@
+// src/app.ts
 import express from "express";
 import cors from "cors";
 import path from "path";
@@ -8,72 +9,41 @@ import errorHandler from "./middlewares/errorHandler.ts";
 
 const app = express();
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://financial-management-system-server.vercel.app",
-];
-
-const corsOptions: cors.CorsOptions = {
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-    return callback(new Error("Not allowed by CORS"));
-  },
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true,
-};
-
 app.use(timeout("10s"));
-
-app.use((req, res, next) => {
+app.use((req, _res, next) => {
   if (!req.timedout) next();
 });
+
+app.use(cors());
+app.options("*", cors());
 
 const assetsPath = path.resolve(process.cwd(), "src/assets");
 app.use("/assets", express.static(assetsPath));
 
-app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
-
 app.use(express.json({ limit: "20mb" }));
 app.use(express.urlencoded({ extended: true, limit: "20mb" }));
 
-app.get("/api-docs.json", (req, res) => res.json(swaggerDocument));
+app.get("/api-docs.json", (_req, res) => res.json(swaggerDocument));
 
-app.get("/api-docs", (req, res) => {
+app.get("/api-docs", (_req, res) => {
   res.setHeader("Content-Type", "text/html; charset=utf-8");
   res.send(`<!doctype html>
-<html lang="en">
+<html>
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>API Docs</title>
-    <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui.css" />
-    <style>
-      html, body {
-        margin: 0;
-        padding: 0;
-        background: #fafafa;
-      }
-      #swagger-ui {
-        margin: 0;
-      }
-    </style>
+    <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css" />
   </head>
   <body>
     <div id="swagger-ui"></div>
-    <script src="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui-bundle.js" crossorigin></script>
-    <script src="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui-standalone-preset.js" crossorigin></script>
+    <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
+    <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-standalone-preset.js"></script>
     <script>
       window.onload = () => {
-        window.ui = SwaggerUIBundle({
+        SwaggerUIBundle({
           url: "/api-docs.json",
           dom_id: "#swagger-ui",
-          deepLinking: true,
           presets: [SwaggerUIBundle.presets.apis, SwaggerUIBundle.SwaggerUIStandalonePreset],
-          layout: "BaseLayout",
         });
       };
     </script>
