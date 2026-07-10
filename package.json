@@ -16,7 +16,7 @@
   "author": "gunawan",
   "license": "ISC",
   "dependencies": {
-    "bcryptjs": "^2.4.3",
+    "bcryptjs": "^3.0.3",
     "connect-timeout": "^1.9.0",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
@@ -27,10 +27,10 @@
     "nodemon": "^2.0.20",
     "path": "^0.12.7",
     "randomstring": "^1.2.3",
+    "serverless-http": "^2.7.0",
     "swagger-ui-express": "^5.0.1",
     "uuid": "^10.0.0",
-    "vue3-toastify": "^0.2.4",
-    "serverless-http": "^2.7.0"
+    "vue3-toastify": "^0.2.4"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
