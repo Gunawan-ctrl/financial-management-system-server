@@ -1,12 +1,29 @@
 import express from "express";
 import cors from "cors";
 import path from "path";
-import indexRoutes from "./routes/index.ts";
 import timeout from "connect-timeout";
+import indexRoutes from "./routes/index.ts";
 import swaggerDocument from "./documentation/swagger.ts";
 import errorHandler from "./middlewares/errorHandler.ts";
 
 const app = express();
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://financial-management-system-server.vercel.app",
+];
+
+const corsOptions: cors.CorsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error("Not allowed by CORS"));
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+};
 
 app.use(timeout("10s"));
 
@@ -17,11 +34,8 @@ app.use((req, res, next) => {
 const assetsPath = path.resolve(process.cwd(), "src/assets");
 app.use("/assets", express.static(assetsPath));
 
-app.use(
-  cors({
-    origin: ["http://localhost:5173", "https://financial-management-system-server.vercel.app"],
-  }),
-);
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 
 app.use(express.json({ limit: "20mb" }));
 app.use(express.urlencoded({ extended: true, limit: "20mb" }));
