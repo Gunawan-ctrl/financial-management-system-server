@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import bcrypt from "bcrypt";
+import bcrypt from "../lib/bcrypt.ts";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
 import userModel from "../models/user-model.ts";

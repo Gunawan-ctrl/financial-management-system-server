@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+import bcrypt from "../lib/bcrypt.ts";
 import type { FilterQuery, UpdateQuery } from "mongoose";
 import userModel from "../models/user-model.ts";
 import type { UserRecord } from "../types/domain.ts";
